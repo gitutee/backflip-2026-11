@@ -25,7 +25,9 @@ Stack: Next.js 16 · React 19 · Tailwind v4 · shadcn/ui · Drizzle + Postgres 
 > **License notice.** As of September 11, 2026, this project is licensed under the [PolyForm Internal Use License 1.0.0](./LICENSE). Versions released before this date remain available under the MIT License under which they were originally published.
 
 ## How it works
-Set up once — clone, [provision a droplet](./devops.md), first deploy — then every feature runs the same loop: describe it, let Claude Code build to spec, review the PR, deploy.
+Set up once — clone, [provision a droplet](./devops.md), first deploy — then every feature runs the same loop: describe it, let OpenAI Codex build to spec, review the PR, deploy. Claude Code remains supported.
+
+Codex paruošimas, darbo eigų palyginimas ir vietinės patikros: [Codex darbo eiga](./docs/codex.md).
 
 ![From one-time setup (clone → provision droplet → first deploy) to the per-feature loop: you describe, Claude Code builds to spec, pull request review and merge, deploy live in prod](./docs/assets/setup-to-ship.png)
 
@@ -102,7 +104,7 @@ in place. Re-seed anytime by recreating `.env.init` and rerunning `init-owner`.
 - **DB changes**: edit `packages/db/src/schema.ts` → `corepack yarn db:generate` → `db:migrate`.
 - **Admin dashboard UI** is built from shadcn blocks — browse and lift components/layouts from **https://ui.shadcn.com/blocks** (this project uses `login-03`, `dashboard-01`, `sidebar-08`).
 - **Full Docker** (app + db): `docker compose --profile web up -d --build` → migrations run, app on `3071`. Owner seed: `docker compose --profile seed run --rm db-seed`.
-- More commands + conventions: `.claude/skills/dev-workflow`.
+- More commands + conventions: `AGENTS.md`, [Codex darbo eiga](./docs/codex.md), `.agents/skills/dev-workflow` (Codex), `.claude/skills/dev-workflow` (Claude Code).
 
 ## Anonymous usage telemetry
 Each time the app starts (`yarn dev`, `next start`, or the standalone server), it sends one anonymous report to the upstream project, so the project can see that people actually run it — the only signal a self-hosted starter ever gets.
