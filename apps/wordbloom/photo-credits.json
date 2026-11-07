@@ -1,0 +1,181 @@
+{
+  "photos": [
+    {
+      "id": "bruno",
+      "src": "assets/football/photos/bruno.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Bruno_Fernandes_USMNT_v_Portugal_Mar_31_2026-27_(cropped).jpg",
+      "file": "Bruno_Fernandes_USMNT_v_Portugal_Mar_31_2026-27_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Bruno_Fernandes_USMNT_v_Portugal_Mar_31_2026-27_%28cropped%29.jpg/500px-Bruno_Fernandes_USMNT_v_Portugal_Mar_31_2026-27_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "de-bruyne",
+      "src": "assets/football/photos/de-bruyne.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Kevin_De_Bruyne_USMNT_v_Belgium_Mar_28_2026-64_(cropped).jpg",
+      "file": "Kevin_De_Bruyne_USMNT_v_Belgium_Mar_28_2026-64_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Kevin_De_Bruyne_USMNT_v_Belgium_Mar_28_2026-64_%28cropped%29.jpg/500px-Kevin_De_Bruyne_USMNT_v_Belgium_Mar_28_2026-64_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "modric",
+      "src": "assets/football/photos/modric.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Luka_Modric_Croatia_v_Portugal_2_July_2026-055.jpg",
+      "file": "Luka_Modric_Croatia_v_Portugal_2_July_2026-055.jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/Luka_Modric_Croatia_v_Portugal_2_July_2026-055.jpg/500px-Luka_Modric_Croatia_v_Portugal_2_July_2026-055.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "valverde",
+      "src": "assets/football/photos/valverde.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Federico_Valverde_2021_(cropped).jpg",
+      "file": "Federico_Valverde_2021_(cropped).jpg",
+      "author": "Real Madrid",
+      "license": "CC BY 3.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Federico_Valverde_2021_%28cropped%29.jpg/500px-Federico_Valverde_2021_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "musiala",
+      "src": "assets/football/photos/musiala.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Jamal_Musiala_Ecuador_v_Germany_25_June_2026-174_(cropped).jpg",
+      "file": "Jamal_Musiala_Ecuador_v_Germany_25_June_2026-174_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Jamal_Musiala_Ecuador_v_Germany_25_June_2026-174_%28cropped%29.jpg/500px-Jamal_Musiala_Ecuador_v_Germany_25_June_2026-174_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "wirtz",
+      "src": "assets/football/photos/wirtz.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Florian_Wirtz_Ecuador_v_Germany_25_June_2026-181_(cropped).jpg",
+      "file": "Florian_Wirtz_Ecuador_v_Germany_25_June_2026-181_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Florian_Wirtz_Ecuador_v_Germany_25_June_2026-181_%28cropped%29.jpg/500px-Florian_Wirtz_Ecuador_v_Germany_25_June_2026-181_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "rice",
+      "src": "assets/football/photos/rice.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Declan_Rice_England_v_Ghana_23_June_2026-150.jpg",
+      "file": "Declan_Rice_England_v_Ghana_23_June_2026-150.jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Declan_Rice_England_v_Ghana_23_June_2026-150.jpg/500px-Declan_Rice_England_v_Ghana_23_June_2026-150.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "vitinha",
+      "src": "assets/football/photos/vitinha.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Vitinha_USMNT_v_Portugal_Mar_31_2026-50_(cropped).jpg",
+      "file": "Vitinha_USMNT_v_Portugal_Mar_31_2026-50_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/44/Vitinha_USMNT_v_Portugal_Mar_31_2026-50_%28cropped%29.jpg/500px-Vitinha_USMNT_v_Portugal_Mar_31_2026-50_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "son",
+      "src": "assets/football/photos/son.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:BFA_2023_-2_Heung-Min_Son_(cropped).jpg",
+      "file": "BFA_2023_-2_Heung-Min_Son_(cropped).jpg",
+      "author": "Ujishadow",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/BFA_2023_-2_Heung-Min_Son_%28cropped%29.jpg/500px-BFA_2023_-2_Heung-Min_Son_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "nico",
+      "src": "assets/football/photos/nico.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Nico_Williams_Argentina_v_Spain_19_July_2026-196_(cropped).jpg",
+      "file": "Nico_Williams_Argentina_v_Spain_19_July_2026-196_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cf/Nico_Williams_Argentina_v_Spain_19_July_2026-196_%28cropped%29.jpg/500px-Nico_Williams_Argentina_v_Spain_19_July_2026-196_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "mac-allister",
+      "src": "assets/football/photos/mac-allister.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Alexis_Mac_Allister_Argentina_v_Spain_19_July_2026-162_(cropped).jpg",
+      "file": "Alexis_Mac_Allister_Argentina_v_Spain_19_July_2026-162_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/Alexis_Mac_Allister_Argentina_v_Spain_19_July_2026-162_%28cropped%29.jpg/330px-Alexis_Mac_Allister_Argentina_v_Spain_19_July_2026-162_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "enzo",
+      "src": "assets/football/photos/enzo.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Enzo_Fernandez_Argentina_v_Spain_19_July_2026-050_(cropped).jpg",
+      "file": "Enzo_Fernandez_Argentina_v_Spain_19_July_2026-050_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Enzo_Fernandez_Argentina_v_Spain_19_July_2026-050_%28cropped%29.jpg/330px-Enzo_Fernandez_Argentina_v_Spain_19_July_2026-050_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "odegaard",
+      "src": "assets/football/photos/odegaard.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Martin_Odegaard_France_v_Norway_26_June_26-014.jpg",
+      "file": "Martin_Odegaard_France_v_Norway_26_June_26-014.jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Martin_Odegaard_France_v_Norway_26_June_26-014.jpg/330px-Martin_Odegaard_France_v_Norway_26_June_26-014.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "lewandowski",
+      "src": "assets/football/photos/lewandowski.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Robert_Lewandowski_NYCFC_v_Chicago_25_July_2026-383.jpg",
+      "file": "Robert_Lewandowski_NYCFC_v_Chicago_25_July_2026-383.jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Robert_Lewandowski_NYCFC_v_Chicago_25_July_2026-383.jpg/330px-Robert_Lewandowski_NYCFC_v_Chicago_25_July_2026-383.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "lautaro",
+      "src": "assets/football/photos/lautaro.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Lautaro_Martinez_Argentina_v_Spain_19_July_2026-049_(cropped).jpg",
+      "file": "Lautaro_Martinez_Argentina_v_Spain_19_July_2026-049_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Lautaro_Martinez_Argentina_v_Spain_19_July_2026-049_%28cropped%29.jpg/330px-Lautaro_Martinez_Argentina_v_Spain_19_July_2026-049_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    },
+    {
+      "id": "alvarez",
+      "src": "assets/football/photos/alvarez.jpg",
+      "source": "https://commons.wikimedia.org/wiki/File:Julian_Alvarez_Argentina_v_Spain_19_July_2026-052_(cropped).jpg",
+      "file": "Julian_Alvarez_Argentina_v_Spain_19_July_2026-052_(cropped).jpg",
+      "author": "Bryan Berlin",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
+      "downloadUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Julian_Alvarez_Argentina_v_Spain_19_July_2026-052_%28cropped%29.jpg/330px-Julian_Alvarez_Argentina_v_Spain_19_July_2026-052_%28cropped%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+      "changes": "Unmodified Wikimedia thumbnail; displayed with CSS object-fit."
+    }
+  ],
+  "unavailable": []
+}

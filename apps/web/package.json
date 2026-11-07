@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "dotenv -e ../../.env -e ../../.env.local -- next dev -p 3070",
+    "dev:wordbloom": "NEXT_DIST_DIR=.next-wordbloom dotenv -e ../../.env -e ../../.env.local -- next dev -p 3081 --hostname localhost",
     "build": "yarn docs:index && next build",
     "docs:index": "tsx scripts/build-docs-index.ts",
     "start": "next start -p 3070",

@@ -1,0 +1,4 @@
+.code-backups/
+.logs/
+__pycache__/
+tests/output/

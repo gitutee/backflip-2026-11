@@ -20,6 +20,7 @@ blob-report
 # next.js
 .next/
 .next-e2e/
+.next-wordbloom/
 out/
 
 # production

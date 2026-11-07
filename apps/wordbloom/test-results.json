@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-11-07",
+  "summary": {
+    "passed": 54,
+    "failed": 0,
+    "unit": 41,
+    "browser": 13
+  },
+  "checks": [
+    {
+      "name": "Backflip workspace lint",
+      "command": "corepack yarn lint",
+      "passed": true,
+      "errors": 0,
+      "warnings": 14079
+    },
+    {
+      "name": "Backflip web production build",
+      "command": "corepack yarn workspace web build",
+      "passed": true
+    },
+    {
+      "name": "WordBloom unit suite",
+      "command": "corepack yarn workspace wordbloom test",
+      "passed": true,
+      "count": 41
+    },
+    {
+      "name": "WordBloom Chromium browser suite",
+      "command": "corepack yarn workspace wordbloom test:browser",
+      "passed": true,
+      "count": 13
+    },
+    {
+      "name": "WordBloom JavaScript syntax",
+      "command": "node --check app.js && node --check core.js && node --check football.js && node --check tests/browser.cjs && node --check tests/core.test.cjs",
+      "passed": true
+    },
+    {
+      "name": "Backflip web typecheck",
+      "command": "corepack yarn workspace web typecheck",
+      "passed": true
+    },
+    {
+      "name": "WordBloom wrapper lint",
+      "command": "corepack yarn workspace web lint -- 'app/backflip/(protected)/wordbloom/_components/wordbloom-app.tsx'",
+      "passed": true
+    }
+  ],
+  "browser": [
+    {
+      "name": "Tests home and responsive tile layout",
+      "passed": true
+    },
+    {
+      "name": "A test is gently locked for 15 minutes after eleven completions",
+      "passed": true
+    },
+    {
+      "name": "Automatic speech prefers an enhanced English voice",
+      "passed": true
+    },
+    {
+      "name": "Look & Write adds 60% and explains the remaining card progress",
+      "passed": true
+    },
+    {
+      "name": "Listen & Write waits for input and adds 30 percent",
+      "passed": true
+    },
+    {
+      "name": "choice test adds 20 percent",
+      "passed": true
+    },
+    {
+      "name": "letter test auto-checks inline and carries progress to a card",
+      "passed": true
+    },
+    {
+      "name": "Read & Choose is available and adds 20 percent",
+      "passed": true
+    },
+    {
+      "name": "starting another test replaces unfinished work",
+      "passed": true
+    },
+    {
+      "name": "browser Back from a test returns to the Tests page",
+      "passed": true
+    },
+    {
+      "name": "all dialogs open in the center of the window",
+      "passed": true
+    },
+    {
+      "name": "Look & Write waits for submit before showing validation",
+      "passed": true
+    },
+    {
+      "name": "fox celebrates correct answers and misses incorrect ones",
+      "passed": true
+    }
+  ]
+}

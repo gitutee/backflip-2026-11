@@ -88,13 +88,32 @@ const SETTINGS_REDIRECTS = [
   },
 ]
 
-/** @spec L2-UI-10, L2-UI-19, L2-DEVOPS-16, L2-DEVOPS-21, L2-MCP-10, L2-MCP-11 */
+/** @spec L2-UI-10, L2-UI-19, L2-UI-72, L2-DEVOPS-16, L2-DEVOPS-21, L2-MCP-10, L2-MCP-11 */
 const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: APP_VERSION,
   },
   async headers() {
-    return [{ source: "/:path*", headers: SECURITY_HEADERS }]
+    const wordBloomNoStore = [
+      {
+        key: "Cache-Control",
+        value: "private, no-store, max-age=0, must-revalidate",
+      },
+    ]
+    return [
+      { source: "/:path*", headers: SECURITY_HEADERS },
+      { source: "/wordbloom", headers: wordBloomNoStore },
+      { source: "/backflip/wordbloom", headers: wordBloomNoStore },
+      { source: "/api/wordbloom/:path*", headers: wordBloomNoStore },
+      ...(process.env.NODE_ENV === "development"
+        ? [
+            {
+              source: "/_next/static/chunks/:path*",
+              headers: wordBloomNoStore,
+            },
+          ]
+        : []),
+    ]
   },
   async rewrites() {
     return WELL_KNOWN_REWRITES
@@ -106,6 +125,44 @@ const nextConfig: NextConfig = {
   // not `next start`. Prod runtime: pm2 on the droplet, node in Docker locally.
   output: "standalone",
   outputFileTracingRoot: path.resolve(import.meta.dirname, "../.."),
+  outputFileTracingExcludes: {
+    "/api/wordbloom/**": ["../../apps/wordbloom/**/*"],
+  },
+  outputFileTracingIncludes: {
+    "/api/wordbloom/**": [
+      "../../apps/wordbloom/app.js",
+      "../../apps/wordbloom/assets/football/coach-clean.png",
+      "../../apps/wordbloom/assets/football/coach.png",
+      "../../apps/wordbloom/assets/football/photos/alvarez.jpg",
+      "../../apps/wordbloom/assets/football/photos/bruno.jpg",
+      "../../apps/wordbloom/assets/football/photos/de-bruyne.jpg",
+      "../../apps/wordbloom/assets/football/photos/enzo.jpg",
+      "../../apps/wordbloom/assets/football/photos/lautaro.jpg",
+      "../../apps/wordbloom/assets/football/photos/lewandowski.jpg",
+      "../../apps/wordbloom/assets/football/photos/mac-allister.jpg",
+      "../../apps/wordbloom/assets/football/photos/modric.jpg",
+      "../../apps/wordbloom/assets/football/photos/musiala.jpg",
+      "../../apps/wordbloom/assets/football/photos/nico.jpg",
+      "../../apps/wordbloom/assets/football/photos/odegaard.jpg",
+      "../../apps/wordbloom/assets/football/photos/rice.jpg",
+      "../../apps/wordbloom/assets/football/photos/son.jpg",
+      "../../apps/wordbloom/assets/football/photos/valverde.jpg",
+      "../../apps/wordbloom/assets/football/photos/vitinha.jpg",
+      "../../apps/wordbloom/assets/football/photos/wirtz.jpg",
+      "../../apps/wordbloom/assets/football/players-1.png",
+      "../../apps/wordbloom/assets/football/players-2.png",
+      "../../apps/wordbloom/assets/fox.png",
+      "../../apps/wordbloom/core.js",
+      "../../apps/wordbloom/football.js",
+      "../../apps/wordbloom/index.html",
+      "../../apps/wordbloom/photo-credits.html",
+      "../../apps/wordbloom/photo-credits.json",
+      "../../apps/wordbloom/portraits.js",
+      "../../apps/wordbloom/seed.js",
+      "../../apps/wordbloom/storage.js",
+      "../../apps/wordbloom/styles.css",
+    ],
+  },
   // The e2e suite boots its own dev server; it sets NEXT_DIST_DIR so it never
   // shares `.next` with a dev server already running on 3070.
   ...(process.env.NEXT_DIST_DIR ? { distDir: process.env.NEXT_DIST_DIR } : {}),

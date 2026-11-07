@@ -1,9 +1,14 @@
 "use client"
 
-import type { ComponentProps, ComponentType } from "react"
+import { useState, type ComponentProps, type ComponentType } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@workspace/ui/components/collapsible"
 import {
   Sidebar,
   SidebarContent,
@@ -14,24 +19,43 @@ import {
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
+  SidebarMenuAction,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from "@workspace/ui/components/sidebar"
-import { RiDashboardLine, RiLinksLine, RiPlugLine } from "@remixicon/react"
+import {
+  RiLayoutGridLine,
+  RiArrowRightSLine,
+  RiDashboardLine,
+  RiLinksLine,
+  RiPlugLine,
+} from "@remixicon/react"
 
 import { BrandIcon } from "@/app/_components/brand-icon"
 import { can, type Capability } from "@/app/_lib/auth/permissions"
 import { NavUser } from "./nav-user"
 import type { SessionUser } from "./types"
 
+const WORDBLOOM_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3081/wordbloom"
+    : "/backflip/wordbloom"
+
 type NavItem = {
   title: string
   url: string
   icon: ComponentType<{ className?: string }>
   capability: Capability
+  newTab?: boolean
+  children?: { title: string; url: string; newTab?: boolean }[]
 }
 
 /** Nav grouped into design's labeled sections; each item declares its
- *  capability. The Settings group is pinned to the bottom (above the user). */
+ *  capability. The Settings group is pinned to the bottom (above the user).
+ *  @spec L2-UI-66
+ */
 const NAV_GROUPS: { label: string; pinBottom?: boolean; items: NavItem[] }[] = [
   {
     label: "Platform",
@@ -41,6 +65,19 @@ const NAV_GROUPS: { label: string; pinBottom?: boolean; items: NavItem[] }[] = [
         url: "/backflip",
         icon: RiDashboardLine,
         capability: "dashboard",
+      },
+      {
+        title: "My apps",
+        url: "/backflip/my-apps",
+        icon: RiLayoutGridLine,
+        capability: "dashboard",
+        children: [
+          {
+            title: "WordBloom",
+            url: WORDBLOOM_URL,
+            newTab: true,
+          },
+        ],
       },
     ],
   },
@@ -73,6 +110,7 @@ export function AppSidebar({
   ...props
 }: ComponentProps<typeof Sidebar> & { user: SessionUser }) {
   const pathname = usePathname()
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({})
 
   const groups = NAV_GROUPS.map((g) => ({
     ...g,
@@ -119,19 +157,85 @@ export function AppSidebar({
             </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {group.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      tooltip={item.title}
-                      isActive={isActive(pathname, item.url)}
-                      render={<Link href={item.url} />}
-                      className="gap-2.5 text-[13px] data-active:font-semibold"
+                {group.items.map((item) =>
+                  item.children ? (
+                    <Collapsible
+                      key={item.title}
+                      open={
+                        openMenus[item.title] ?? isActive(pathname, item.url)
+                      }
+                      onOpenChange={(open) =>
+                        setOpenMenus((current) => ({
+                          ...current,
+                          [item.title]: open,
+                        }))
+                      }
+                      render={<SidebarMenuItem />}
                     >
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
+                      <SidebarMenuButton
+                        tooltip={item.title}
+                        isActive={isActive(pathname, item.url)}
+                        render={<Link href={item.url} />}
+                        onClick={() =>
+                          setOpenMenus((current) => ({
+                            ...current,
+                            [item.title]: true,
+                          }))
+                        }
+                        className="gap-2.5 text-[13px] data-active:font-semibold"
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                      <CollapsibleTrigger
+                        render={<SidebarMenuAction />}
+                        className="group/apps"
+                        aria-label="Toggle My apps submenu"
+                      >
+                        <RiArrowRightSLine className="transition-transform group-aria-expanded/apps:rotate-90" />
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {item.children.map((child) => (
+                            <SidebarMenuSubItem key={child.title}>
+                              <SidebarMenuSubButton
+                                render={<Link href={child.url} />}
+                                target={child.newTab ? "_blank" : undefined}
+                                rel={
+                                  child.newTab
+                                    ? "noopener noreferrer"
+                                    : undefined
+                                }
+                              >
+                                <span>{child.title}</span>
+                              </SidebarMenuSubButton>
+                            </SidebarMenuSubItem>
+                          ))}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  ) : (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton
+                        tooltip={item.title}
+                        isActive={isActive(pathname, item.url)}
+                        render={
+                          <Link
+                            href={item.url}
+                            target={item.newTab ? "_blank" : undefined}
+                            rel={
+                              item.newTab ? "noopener noreferrer" : undefined
+                            }
+                          />
+                        }
+                        className="gap-2.5 text-[13px] data-active:font-semibold"
+                      >
+                        <item.icon />
+                        <span>{item.title}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

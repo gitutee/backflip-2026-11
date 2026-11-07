@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,interactive-widget=resizes-content"
+    />
+    <meta name="theme-color" content="#2d6653" />
+    <meta
+      name="description"
+      content="A small daily English practice, with a little room to bloom."
+    />
+    <title>WordBloom · A little practice, a little growth</title>
+    <link rel="icon" href="assets/fox.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="seed.js"></script>
+    <script defer src="football.js"></script>
+    <script defer src="core.js"></script>
+    <script defer src="storage.js"></script>
+    <script defer src="portraits.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <button class="brand" data-action="home" aria-label="WordBloom home">
+        <span class="brand-icon" aria-hidden="true">✳</span
+        ><span
+          >Word<span class="brand-light">Bloom</span
+          ><small>FOOTBALL CLUB</small></span
+        >
+      </button>
+      <nav aria-label="Main navigation">
+        <button data-action="test-home" data-nav="test">Tests</button>
+        <button data-action="team" data-nav="team">My Team</button>
+      </nav>
+      <button class="parent-link" data-action="parent" data-nav="parent">
+        Parent corner <span aria-hidden="true">↗</span>
+      </button>
+    </header>
+    <div id="saveError" class="save-error" role="alert" hidden></div>
+    <main id="app" aria-busy="true">
+      <div class="loading">
+        <span class="brand-icon">✳</span>
+        <h1>Opening your club…</h1>
+        <p>Your words are staying right here, on this device.</p>
+      </div>
+    </main>
+    <footer>
+      Every test counts. <span aria-hidden="true">⚽</span>
+      <span id="storageLabel">Saved on this browser.</span
+      ><button data-action="about">About & moving devices</button><a class="credits-link" href="photo-credits.html" target="_blank" rel="noopener noreferrer">Photo credits</a>
+    </footer>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+    <dialog id="modal" aria-labelledby="modalTitle">
+      <div id="modalContent"></div>
+    </dialog>
+    <input id="backupFile" type="file" accept="application/json,.json" hidden />
+    <noscript
+      >WordBloom needs JavaScript enabled to practise and save your
+      words.</noscript
+    >
+  </body>
+</html>

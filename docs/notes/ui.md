@@ -3,6 +3,7 @@
 > L3 = how / volatile. AI writes free. Cites L2 IDs up. Matches code as-is.
 
 ## File map
+
 - `packages/ui/src/components/*.tsx` — shadcn component set. Satisfies `L2-UI-01`.
 - `packages/ui/src/lib/utils.ts` — `cn()`. Satisfies `L2-UI-02`.
 - `packages/ui/src/styles/globals.css` — theme tokens + Tailwind `@source` globs. Satisfies `L2-UI-03`. `@source` paths are relative to this file (4 levels up = repo root): `../../../../apps/**`, `../../../../components/**`, `../**` (packages/ui itself). All consumer `.tsx` must be covered or their utility classes aren't generated.
@@ -19,7 +20,9 @@
 - `apps/web/next.config.ts` — `transpilePackages: ["@workspace/ui"]`. Satisfies `L2-UI-10`.
 
 ## Admin flat restyle ("Flat Admin" design) — L2-UI-03
+
 Protected `/backflip/*` surface restyled to a flat, hairline aesthetic (imported from claude.ai/design "Flat Admin"). **Theme tokens unchanged** — already flat-neutral; radius already matches (cards `rounded-xl` ≈ 11px, controls ≈ 7.6px). Restyle is component/layout only.
+
 - Shared primitives: `(protected)/_components/page-heading.tsx` — `PageHeading` (large tracking-tight title + muted subtitle + optional trailing `action`) and `SectionLabel` (uppercase `text-xs` micro-label). Layout-scoped (`L1-ARCH-08`).
 - `section-cards.tsx` — flat stat cards: `SectionLabel` + big `tabular-nums` value + optional unit / emerald·red delta / slim progress bar / emerald status dot + muted caption. No `Card`/`Badge` chrome.
 - `site-header.tsx` — see "Admin chrome (design-matched)".
@@ -29,11 +32,13 @@ Protected `/backflip/*` surface restyled to a flat, hairline aesthetic (imported
 - Green pills use `emerald-*` utilities (only non-token color; light+dark variants). Everything else theme tokens.
 
 ## Admin chrome (design-matched) — L2-UI-03
+
 Sidebar + header + shell now match the Flat Admin design layout (a later pass superseded the earlier "sidebar not restyled" note). Menu items/routes unchanged at that pass (Dashboard/Users/Account/Settings); Account has since left the nav — `L2-UI-42`.
+
 - `(protected)/layout.tsx` — sidebar switched from `variant="inset"` (floating) to **flush** (default `variant="sidebar"`, border-right); `--sidebar-width: 15.5rem`, `--header-height: 3rem` (was 3.5rem — compacted, inner controls are `size-7` so 48px leaves 10px each side); content area on a soft `bg-muted/40` canvas so white panels/cards pop; the header takes no props — the user lives in the sidebar's `NavUser` only.
 - `app-sidebar.tsx` (client) — bordered `bg-card` **brand tile** (`BrandIcon`, `text-primary` — same mark as the public wordmark) + "Backflip" / "Admin console" subtitle; nav split into labeled groups **Platform** (Overview) + **Settings** (Integrations, MCP capabilities) via `SidebarGroupLabel` — working surfaces only; Members and Account live in the `NavUser` menu (`L2-UI-42`); the Settings group is `mt-auto` (pinned to the bottom, above the user footer, which has `border-t border-sidebar-border`); **active** state from `usePathname` (`isActive`, exact for `/backflip`, prefix otherwise); groups filtered by `can(role, cap)`.
 - `nav-user.tsx` — footer chip now shows role (was email); dropdown = Members / Account / Log out, and it is the **only** entry point to `/backflip/users` and `/backflip/account` (`L2-UI-42`). Members is wrapped in `can(user.role, "users.view")` — the sidebar filtered by capability for it, so the menu has to as well or a teammate would see a link they cannot open. Both items carry `cursor-pointer` at the call site — `DropdownMenuItem` in `packages/ui` is `cursor-default` (native-menu convention) and the chip reads as a web control, same call as the ⌘K palette's items (`L2-UI-43`).
-- **Control borders are the menu highlight, lifted** (`L2-UI-50`). The header re-points the base tokens for its subtree. Pointing `--input` at `--chrome-header-border` gave the ⌘K jump control a ~1.05:1 outline — the hairline is right for the sidebar↔header seam and useless for a control; a bespoke per-palette input tone fixed the contrast but introduced a third colour the chrome used nowhere else. `--chrome-header-input` is now the palette's own `--sidebar-accent` with L × 1.2 on the dark palettes and L × 0.9 on the light ones — stepped away from the surface in whichever direction that highlight already sits. Two wrong turns on the way: plain `× 1.2` everywhere clamps the light accents (~0.88 L) to white on a ~0.96 L header; a symmetric `× 0.8` down then overshot to 2.3:1 while the dark palettes sat at 1.7:1, and read as a hard outline. L is not contrast — a near-white surface turns the same step into far more of it, so the factors differ to land both tones at ≈1.7:1. Values (accent → border): slate `.332→.398`, graphite `.301→.361`, pine `.329→.395`, aubergine `.347→.416`, gold `.886→.797`, sky-blue `.884→.796`, sage `.882→.794`, rose-gold `.885→.796`; stock `--stock-header-input` is `.94→.846` light / `.292→.35` dark, declared in `:root`/`.dark` since default is the one palette that follows the toggle, and `[data-chrome-header="plain"]` reuses it. `--stock-input` was dropped (nothing read it); `--stock-sidebar-accent` stays — the account preview tiles use it. **Custom needs its own entry:** a `var()` inside a custom property is substituted where the property is *declared*, so the `:root` fallback computes against the stock accent and never sees what `customChromeVars()` ships inline; it uses `oklch(from … calc(l * …) c h)`, which is only safe because inline style is never minified (`L2-UI-47`). Measuring any of this needs pixels or token maths, NOT `getComputedStyle`: Chrome returns `lab()` here, and reading those three components as RGB produced confident nonsense on the first attempt.
+- **Control borders are the menu highlight, lifted** (`L2-UI-50`). The header re-points the base tokens for its subtree. Pointing `--input` at `--chrome-header-border` gave the ⌘K jump control a ~1.05:1 outline — the hairline is right for the sidebar↔header seam and useless for a control; a bespoke per-palette input tone fixed the contrast but introduced a third colour the chrome used nowhere else. `--chrome-header-input` is now the palette's own `--sidebar-accent` with L × 1.2 on the dark palettes and L × 0.9 on the light ones — stepped away from the surface in whichever direction that highlight already sits. Two wrong turns on the way: plain `× 1.2` everywhere clamps the light accents (~0.88 L) to white on a ~0.96 L header; a symmetric `× 0.8` down then overshot to 2.3:1 while the dark palettes sat at 1.7:1, and read as a hard outline. L is not contrast — a near-white surface turns the same step into far more of it, so the factors differ to land both tones at ≈1.7:1. Values (accent → border): slate `.332→.398`, graphite `.301→.361`, pine `.329→.395`, aubergine `.347→.416`, gold `.886→.797`, sky-blue `.884→.796`, sage `.882→.794`, rose-gold `.885→.796`; stock `--stock-header-input` is `.94→.846` light / `.292→.35` dark, declared in `:root`/`.dark` since default is the one palette that follows the toggle, and `[data-chrome-header="plain"]` reuses it. `--stock-input` was dropped (nothing read it); `--stock-sidebar-accent` stays — the account preview tiles use it. **Custom needs its own entry:** a `var()` inside a custom property is substituted where the property is _declared_, so the `:root` fallback computes against the stock accent and never sees what `customChromeVars()` ships inline; it uses `oklch(from … calc(l * …) c h)`, which is only safe because inline style is never minified (`L2-UI-47`). Measuring any of this needs pixels or token maths, NOT `getComputedStyle`: Chrome returns `lab()` here, and reading those three components as RGB produced confident nonsense on the first attempt.
 - `site-header.tsx` (client) — `usePathname` breadcrumb trail (e.g. Settings / My account), `SidebarTrigger`, right-aligned Docs link (internal `/backflip/docs`, `L2-UI-20`); breadcrumb + Docs are `text-[13px]`, matching the sidebar menu items (`L2-UI-51`) + `ThemeToggle` (shared `app/_components/theme-toggle.tsx`, ghost `size-7`). No avatar — it duplicated the sidebar's `NavUser` chip and cost header width. Breadcrumb `nav` and the right cluster are both shrinkable (`min-w-0`, `truncate` / `shrink`) so the header never forces horizontal scroll on narrow viewports.
 - Removed: `nav-main.tsx`, `nav-secondary.tsx` (nav inlined into `app-sidebar`).
 - Nav labels renamed to design: **Overview** (was Dashboard) + **Integrations** (was Settings; icon `RiLinksLine` — chain links read as "connection"; was `RiCheckboxMultipleBlankLine`, stacked squares that read as "copy"). Routes/capabilities unchanged (`/backflip`, `/backflip/settings/integrations`, caps `dashboard`/`settings`). Menu item type `text-[13px]`, group labels `text-[11px]` to match a1.
@@ -42,59 +47,70 @@ Sidebar + header + shell now match the Flat Admin design layout (a later pass su
 - Sidebar `collapsible="icon"` (was offcanvas) → contracted = 60px icon rail (design 1B); `--sidebar-width-icon: 3.5rem`; logo/user buttons get `group-data-[collapsible=icon]:p-0!` so tile/avatar fit. **Icon-only when contracted:** `p-0` alone was not enough — the brand label block and the user chip's label + `RiMore2Line` are `flex-1`/`ml-auto` siblings that keep their intrinsic width, so inside the 32px button (`overflow-hidden`, `justify-center`) they pushed the icon out of the box (measured brand tile `x = -24px`, footer avatar `x = -8.5px` — the mark disappeared). Both label blocks now carry `group-data-[collapsible=icon]:hidden` so they leave the flow entirely. Guarded by `e2e/admin-chrome.spec.ts`. Header divider is a plain `h-4 w-px bg-border` span (base-mira `Separator` forces `data-vertical:self-stretch`, so it stretched/misaligned — a fixed span centered by the header's `items-center` is reliable).
 
 ### Glass seam ramp is tint-gated
+
 `[data-chrome-glass="on"][data-chrome-header="themed"] [data-slot="site-header"]::after` — all three of its rules (the gradient, the `background-attachment: fixed`, and the mask block) carry the tint gate.
 
-The bug it fixes: with "Float the header over the page" on and "Tint the header too" off, the header still showed a coloured wash fading in from the left. That was the seam ramp — the sidebar's own gradient, viewport-fixed so it continues across the header, masked to fade over ~340px. It is only ever needed to make a *tinted* header meet the sidebar cleanly; on a plain header there is no seam, so it was pure bleed into a strip the user had just asked to leave alone.
+The bug it fixes: with "Float the header over the page" on and "Tint the header too" off, the header still showed a coloured wash fading in from the left. That was the seam ramp — the sidebar's own gradient, viewport-fixed so it continues across the header, masked to fade over ~340px. It is only ever needed to make a _tinted_ header meet the sidebar cleanly; on a plain header there is no seam, so it was pure bleed into a strip the user had just asked to leave alone.
 
 Only the ramp is gated. The blur and wash stay on `data-chrome-glass` alone, because glass and tint are orthogonal by design — a plain header can float.
 
 ## Homepage hero — brand palette (L2-UI-56)
+
 - `packages/ui/src/styles/globals.css` — `[data-surface="public"]` and `.dark [data-surface="public"]` blocks, placed directly above the chrome-theme blocks. Four tokens: `--brand`, `--brand-foreground`, `--brand-soft`, `--brand-stripe`.
 - `apps/web/app/_components/hero.tsx` — headline is four lines (`Star it.` / `Clone it.` / `Prompt.` / `Upgrade it.`), the last two on `--brand-soft` and `--brand`. Primary CTA filled with `--brand`; badge sparkle and stripe thread likewise. Primary CTA now reads "Open Admin" → `/backflip` (it pointed at `/getting-started` until that route was deleted, `L2-UI-63`); outline CTA and the GitHub link are unchanged.
 - `apps/web/app/_components/site-header.tsx` — Admin button filled with `--brand`.
 - `app/page.tsx` is the only public page root, so it is the only one carrying `data-surface="public"` (`L2-UI-63`; it was six before the trim, all with an identical root element).
 
 ### Fade anchored to the content box (`L2-UI-65`)
+
 - 2026-09-13: overlay 90deg stops changed from `34% / 82%` to `calc(max(0px, 50% - 36rem) + 24.5rem) / calc(… + 59rem)`. Same numbers expressed in box units (72rem × 0.34 / 0.82); `max(0px, …)` pins the anchor to 0 once the window is narrower than the box, so nothing changes below 72rem.
 - Texture layer untouched — still `absolute inset-0` on the section, full-bleed.
 - Base font is 17px, so 36rem here is 612px, matching `max-w-6xl` which is also rem-based; keep both in rem.
 - Check at ≥2000px wide: stripes begin ~half-way across the copy column, run to the right edge.
 
 ### Why a scoped attribute rather than new `:root` tokens
-New token names at `:root` would already have been safe — the admin references none of them. The attribute buys something the naming alone does not: it makes the separation *enforceable by reading*. A brand token cannot resolve inside `/backflip/*` at all, so a future component that reaches for `--brand` in the admin renders with no colour rather than quietly importing the marketing palette. That failure is loud, which is the point.
+
+New token names at `:root` would already have been safe — the admin references none of them. The attribute buys something the naming alone does not: it makes the separation _enforceable by reading_. A brand token cannot resolve inside `/backflip/*` at all, so a future component that reaches for `--brand` in the admin renders with no colour rather than quietly importing the marketing palette. That failure is loud, which is the point.
 
 It also states the rule in one place. The comment above the block is the contract: a colour the public surface wants and the admin does not gets a new token behind this attribute, never a new value for an existing one.
 
 ### Why the brand stops are hex
-Every other colour in this file is `oklch()` and moves with the neutral ramp. These do not — they are a brand mark, taken verbatim from the design source, and a palette shift that dragged them along would be a bug. `--brand-stripe` is the exception that stays `oklch()`: it is a *tint* of the backdrop, wants to sit at a specific low chroma against the surface, and is never seen as "the brand colour" on its own.
+
+Every other colour in this file is `oklch()` and moves with the neutral ramp. These do not — they are a brand mark, taken verbatim from the design source, and a palette shift that dragged them along would be a bug. `--brand-stripe` is the exception that stays `oklch()`: it is a _tint_ of the backdrop, wants to sit at a specific low chroma against the surface, and is never seen as "the brand colour" on its own.
 
 ### Gotcha
+
 The hero's readability overlay fades to `--background`, not to the stripe. Changing `--brand-stripe` to something with real chroma makes the texture fight the headline where the two overlap on the left — the overlay only masks it to 34%.
 
 ## Custom palette presets (L2-UI-55)
+
 - `apps/web/app/_lib/theme/chrome-presets.ts` — constraints and the one decision: `MAX_SAVED_PRESETS` 24, `MAX_PRESET_NAME` 32, `normalizePresetName`, `samePair`, and `planPresetSave` → `PresetSavePlan`. Client-safe (no `server-only`) — the dialog imports it directly. The presets themselves are rows (`L2-DB-37`).
-- `apps/web/app/_lib/theme/preferences.ts` — the preset data layer: `listSystemPresets` (`type = 'system'`, oldest first so the seed order holds), `listChromePresets` (`type = 'user'` **and** owner), `countChromePresets`, `findChromePresetByName` (the row a save under that name would overwrite), `insertChromePreset` (upsert on `(userId, name)`, always `type: 'user'`), `updateChromePresetRow` (by id, scoped by owner *and* kind, returns whether a row was hit), `deleteChromePresetRow` (scoped by owner *and* kind).
+- `apps/web/app/_lib/theme/preferences.ts` — the preset data layer: `listSystemPresets` (`type = 'system'`, oldest first so the seed order holds), `listChromePresets` (`type = 'user'` **and** owner), `countChromePresets`, `findChromePresetByName` (the row a save under that name would overwrite), `insertChromePreset` (upsert on `(userId, name)`, always `type: 'user'`), `updateChromePresetRow` (by id, scoped by owner _and_ kind, returns whether a row was hit), `deleteChromePresetRow` (scoped by owner _and_ kind).
 - `account/_actions.ts` — `createChromePreset` / `updateChromePreset` / `deleteChromePreset`, session-scoped. The cap is looked up against the name first, so it only bites a genuinely new row; a full shelf is still editable. (It previously checked the count unconditionally, which contradicted its own comment and blocked every edit once the shelf filled.)
 - `account/_components/custom-theme-dialog.tsx` — the editor. Preview + two colour wells + one permanent save panel + both shelves.
 - `account/_components/shell-preview.tsx` — `ShellPreview`, lifted out of `appearance-section.tsx` so the card and the dialog paint the same miniature. Pure move, no behaviour change.
 - `account/_components/appearance-section.tsx` — `GROUP_ORDER` is `["default"]`: only the Default tile and the Custom card render on the page, plus the two header switches. `CustomThemeCard` no longer edits — preview, read-only echo of the two colours, and a button. The dialog is rendered once at section level and its `open` state lives here, so the header's "Browse themes…" and the card's "Customize…" drive the same instance. New `applyCustomPair` commits both colours in one write; `pickCustomColor` is a one-line wrapper over it.
 
 ### Why a dialog
-The picker is a *browsing* task — seventeen swatches compared against a preview — sitting in a page that is otherwise a list of settings. Inline, the eight fixed palettes rendered as preview tiles pushed password, email and connections below the fold, and the preset shelves would have doubled it again.
+
+The picker is a _browsing_ task — seventeen swatches compared against a preview — sitting in a page that is otherwise a list of settings. Inline, the eight fixed palettes rendered as preview tiles pushed password, email and connections below the fold, and the preset shelves would have doubled it again.
 
 ### Why the fixed palettes became colour pairs
-They were first *moved* into the dialog as real themes, then flattened to pairs so the shelf has one behaviour: every swatch sets two colours on `custom`. The cost is real and worth stating — a pair derives its gradient stops, ink and borders through `customChromeVars`, where the stylesheet block spelled them out literally (`L2-UI-47`), and three of the eight clip an sRGB channel on the way out of `oklch()` (`pine` and `rose-gold` hardest). So "Slate" the pair is very close to, but not the same pixels as, "Slate" the block.
+
+They were first _moved_ into the dialog as real themes, then flattened to pairs so the shelf has one behaviour: every swatch sets two colours on `custom`. The cost is real and worth stating — a pair derives its gradient stops, ink and borders through `customChromeVars`, where the stylesheet block spelled them out literally (`L2-UI-47`), and three of the eight clip an sRGB channel on the way out of `oklch()` (`pine` and `rose-gold` hardest). So "Slate" the pair is very close to, but not the same pixels as, "Slate" the block.
 
 The blocks stay in `globals.css` and the ids stay in `CHROME_THEMES`. They are no longer reachable from the picker, but a user whose stored `chromeTheme` is `slate` keeps rendering exactly as before — `resolveChromeTheme` would otherwise silently drop them to `default`.
 
 ### Why presets are rows, not a TypeScript catalog
+
 The shipped set and a person's saved set are the same thing to everything that reads them: a named surface/accent pair. Keeping the shipped half in code and the saved half in Postgres meant two shapes, two queries and two branches in every component that rendered a shelf. One table with a `type` column collapses that — the UI takes two arrays of the same type and renders the same `Swatch`.
 
-It also puts the seed under migration control, which is how `Brick` can ship *into a user's own shelf* (deletable, renameable) while the eight palettes ship ownerless. That distinction is not expressible when the catalog is a constant.
+It also puts the seed under migration control, which is how `Brick` can ship _into a user's own shelf_ (deletable, renameable) while the eight palettes ship ownerless. That distinction is not expressible when the catalog is a constant.
 
 The four seeded user pairs are one family by construction: `Brick` (`#6b2424`/`#933939`) converted to OKLCH is L 0.368 / C 0.102 for the surface and L 0.470 / C 0.122 for the accent, and `Indigo`, `Moss` and `Amethyst` hold both figures while moving only the hue. Matching intensity by eye across hues does not work — a green at a red's lightness reads far brighter — so it is done in a perceptual space and converted back.
 
 ### Adding a shipped palette
+
 A new system palette is a **migration, not code** (`0019` → `Teal`, `#0c2a31` / `#333b4a`). Nothing in `chrome-themes.ts` or `globals.css` changes: a preset is a colour pair applied to `custom`, and `customChromeVars` derives the rest.
 
 Do **not** add a `[data-chrome-theme]` block for it. `chrome-themes.test.ts` asserts every block has a catalog entry, so a block with no `CHROME_THEMES` id fails — and the id would be unreachable from the picker anyway (`GROUP_ORDER` is `["default"]`).
@@ -104,26 +120,31 @@ Teal is the first pair authored as a pair rather than converted from an `oklch()
 The trade: those pairs are seeded only for accounts that exist when `0018` runs. A later account starts with an empty user shelf — the honest default for a list whose whole meaning is "what you saved", and the alternative (re-seeding on read) would resurrect a preset the user deliberately deleted.
 
 ### Why the save control is permanent, and says what it will do
-It answers "I like what I just made", so it belongs where the making happened. It used to *appear* only for a pair that matched nothing and be replaced by "These are Slate." otherwise, which made the column jump and made saving feel conditional on a rule nobody could name. Now the slot is fixed — name field, button, one line of consequence — and only its meaning moves.
 
-That meaning is `planPresetSave`, kept pure and outside the component because it is the whole of the feature's ambiguity: new vs. rename vs. re-colour vs. overwrite. It returns the `action` even when `blocked`, so the button's label describes the *situation* rather than its own pressability and does not flicker between identities as you type. The overwrite case is the reason it exists: the upsert on `(userId, name)` used to destroy a preset with no warning at all, and the only place that can be warned about is the button, before the click — hence `Replace preset` over "Overwrites the colours of “Brick”".
+It answers "I like what I just made", so it belongs where the making happened. It used to _appear_ only for a pair that matched nothing and be replaced by "These are Slate." otherwise, which made the column jump and made saving feel conditional on a rule nobody could name. Now the slot is fixed — name field, button, one line of consequence — and only its meaning moves.
+
+That meaning is `planPresetSave`, kept pure and outside the component because it is the whole of the feature's ambiguity: new vs. rename vs. re-colour vs. overwrite. It returns the `action` even when `blocked`, so the button's label describes the _situation_ rather than its own pressability and does not flicker between identities as you type. The overwrite case is the reason it exists: the upsert on `(userId, name)` used to destroy a preset with no warning at all, and the only place that can be warned about is the button, before the click — hence `Replace preset` over "Overwrites the colours of “Brick”".
 
 Name comparison in the plan is **exact**, mirroring the unique index. Postgres holds "brick" and "Brick" as two rows; a label promising to replace one while the server writes the other would be a lie.
 
 ### Naming: "chrome" stays in the code, never in the UI
+
 `chrome` is the term of art for a window's frame, and the whole implementation is built on it — `chromeTheme`, `--chrome-header-*`, `data-chrome-theme`, `chrome-themes.ts`. Renaming that would touch a DB column, a CSS variable family and a stamped DOM attribute for no functional gain.
 
 But to someone reading a settings dialog, "Chrome themes" names a browser. So the user-visible string says which surfaces actually change: **Sidebar and header theme**. Keep that split — jargon in the code, plain English on screen.
 
 ### Rename and re-colour, without a third control
+
 Prefilling the name field with the preset the pair descends from turns the existing furniture into the edit path: edit the text → rename, nudge a well → re-colour, both → both, all landing on `updateChromePreset(id, …)`. Descent is client state — the preset the colours match exactly, or the last one clicked before a well moved — so nothing about editing needs a schema change or a `pencil → inline rename → separate colour update` triplet. `Save as a copy` is the one explicit branch, for "I want to keep both".
 
 `insertChromePreset` still upserts on `(userId, name)`, because typing a name you recognise still means "that one". The difference is that the UI now says so first. Update is addressed by **id** rather than name, which is the only way to express changing the name of the row you are looking at, and it preserves `createdAt` so the shelf does not reshuffle under an edit.
 
 ### Why the shelf count is usually silent
+
 The header used to read `4 of 24` at all times. A real user read that as "there are 24 presets" — it looks like an inventory, and it is not one. Headroom is only actionable once it is nearly gone, so the count now appears within `CAP_HINT_FROM` (4) of the cap and reads `Room for 3 more` / `No room left`. Away from the cap the number says nothing the shelf does not already show.
 
 ### Gotchas
+
 - The `<input type="color">` wells are **uncontrolled** (`defaultValue`) so dragging the OS colour wheel doesn't fire a write per frame — they commit on `change`. That means applying a preset elsewhere in the dialog wouldn't repaint them, so each well is `key={value}`: a new colour remounts the input.
 - The delete on a user preset is **always visible**, not revealed on hover. `hidden` cannot take keyboard focus, so the earlier `group-hover:flex focus-visible:flex` was unreachable by keyboard and hard to find with a mouse.
 - The saved shelf keeps local state for optimism, reconciled against props **during render** (the `lastSaved` pattern), not in an effect. An effect paints the stale list first and immediately re-renders — and the repo's lint rule flags exactly that.
@@ -131,17 +152,20 @@ The header used to read `4 of 24` at all times. A real user read that as "there 
 - The name field is reconciled against the preset being edited **by identity, not by name** (the `lastOriginKey` pattern, same during-render shape as the shelf's `lastSaved`). Keying it on the name would undo every keystroke of a rename.
 - The just-saved chip rings for 1.6s and is scrolled into view. The shelf can sit below the dialog's fold, so without it a save's only evidence was a toast that pointed nowhere.
 - Optimistic writes replace the touched row **in place** for an update or a replace. An update keeps its `createdAt`, so hoisting it to the head was undone by the next revalidation and the chip visibly hopped. Only a genuinely new preset prepends.
-- There is no naming *mode* any more, so Escape is free to do what Escape does in a dialog: close it. Enter still runs the primary action.
+- There is no naming _mode_ any more, so Escape is free to do what Escape does in a dialog: close it. Enter still runs the primary action.
 
 ## Overview page — design 5A (L2-UI-03)
+
 - 2026-09-13: page root lost `bg-muted dark:bg-background` (same on `account/page.tsx` and `ui-samples/page.tsx`). The canvas in `(protected)/layout.tsx` is the one ground (`bg-muted/40`, `L2-UI-61`); a page-level ground sat inside the 1440px wrapper and showed as a darker box with lighter gutters on anything wider. Light mode is now a shade lighter behind the cards, dark mode a shade lighter than pure `background` — both match what every master-detail page already showed.
-`/backflip` rebuilt from generic stat-cards/chart/table to the 5A home. **Real data only.**
+  `/backflip` rebuilt from generic stat-cards/chart/table to the 5A home. **Real data only.**
 - `page.tsx` (RSC) — greeting (`Welcome back, {firstName}`, real date, subtitle "Pick up where you left off.") + 3 real stat cards (Members total/active/pending, Integrations enabled + health dot, Pending) + 2 info cards: **Finish setting up** (4 real steps derived from name/user-count/ai/email config) + **Recent members** (newest 4 from `users`). Full-bleed, `max-w-[900px]` centered; canvas mirrors ui-samples (`bg-muted dark:bg-background`, hero stripe backdrop removed), each card `rounded-xl border bg-card p-5` (was a flat `bg-card` page with borderless-bg cards).
 - Removed: `section-cards.tsx`, `dashboard-chart.tsx`, `recent-table.tsx`.
 - Bottom of the page column renders `AppVersion` (see version marker below), centered, same low-contrast treatment as the public footer.
 
 ## Members page — design 1A master-detail (L2-UI-03; auth domain UI)
+
 `/backflip/users` ported from a flat card list to a 3-column master/detail (design "Flat Admin" 1A). **Layout-faithful, real-data-only** — no schema/action changes; unsupported design chrome omitted.
+
 - `users/_components/types.ts` — `Member` (+ derived `status`, `usesGoogle`, `joined`), `WorkspaceCounts`. `MemberStatus` = `active` (has login method OR `emailVerified`) | `pending` (neither). No "suspended" (no backend).
 - `members-view.tsx` (client shell) — selection + `mode` (overview/edit/new) + search/filter state; `flex h-full min-h-0 bg-card` 3 cols (list `lg:w-[22rem]` + `bg-background`, detail `flex-1` + `bg-card`, rail `xl:` only). < lg: list/detail stack via `mobileDetail` toggle + back control.
 - `members-list.tsx` — header + count + `New` (owner), search, filter pills (All/Active/Pending), rows (avatar, name + mono email, Google icon from `loginMethods`, status dot), selected = `border-l-2 border-primary bg-muted`.
@@ -151,7 +175,9 @@ The header used to read `4 of 24` at all times. A real user read that as "there 
 - Removed: `users-list.tsx`, `add-user-dialog.tsx`, `edit-user-dialog.tsx`. `_actions.ts` `updateUser` + REST route unchanged.
 
 ## Account page — design 4a (L2-UI-03; auth domain UI)
+
 `/backflip/account` ported to the "My account" 2-column: details left, security rail right. **Real-data-only**, actions unchanged.
+
 - `account/page.tsx` — also selects `emailVerified`. Full-bleed 4a layout: main column (`max-w-[900px]` content, matches Overview card width, `p-6 lg:p-8`) + a right rail with `border-l` (stacks under main < lg with `border-t`). Passes `emailVerified` + `loginMethods` to rail + email pill.
   - **Canvas mirrors ui-samples** (`bg-muted dark:bg-background`), main column and rail alike; only cards keep `bg-card` (profile summary, "Account details" list, both rail cards). Was `bg-card` main + `bg-muted/50` rail. Same treatment as the Overview page; inline edit forms stay `bg-muted/40`.
   - Rail width is stepped: `lg:w-64` (256px) → `xl:w-80` (320px), so the main column keeps usable width on ~1200px viewports instead of being squeezed by a fixed 320px rail. Rail and main content both carry `min-w-0` so neither blocks shrinking.
@@ -165,26 +191,28 @@ The header used to read `4 of 24` at all times. A real user read that as "there 
 - Omitted (no backend): Two-factor, last sign-in, session/device list, danger-zone/deactivate.
 
 ## Tab titles / breadcrumbs — `L2-UI-52`
-- `backflip/_lib/crumbs.ts` — the route→trail map, moved out of `site-header.tsx` so it has one owner. Exports `crumbsFor()` (header), `titleFor()` (page titles), `CRUMB_SEPARATOR` (` › `, U+203A, path hops), `BRAND_SEPARATOR` (` · `, U+00B7, brand join) and `TITLE_PREFIX` (`B`). Two separators on purpose — the brand is not an ancestor of the first crumb, so a chevron there would read as a hierarchy it does not have.
+
+- `backflip/_lib/crumbs.ts` — the route→trail map, moved out of `site-header.tsx` so it has one owner. Exports `crumbsFor()` (header), `titleFor()` (page titles), `CRUMB_SEPARATOR` (`›`, U+203A, path hops), `BRAND_SEPARATOR` (`·`, U+00B7, brand join) and `TITLE_PREFIX` (`B`). Two separators on purpose — the brand is not an ancestor of the first crumb, so a chevron there would read as a hierarchy it does not have.
 - `backflip/layout.tsx` — `metadata.title.template = "B · %s"`, default `B · Admin`; a page's own trail supplies the chevrons, so a full title reads `B · Settings › My account`. Sits on the **`/backflip`** layout, not `(protected)`, so `(auth)` login/forgot/reset inherit it; those had no title at all and rendered as the bare host in the tab.
 - Every page under `/backflip` sets `title: titleFor("<its route>")`. The route string is written literally per page — `generateMetadata` gets no pathname in a layout, so there is no way to derive it centrally.
 - `ui-samples/layout.tsx` exists **only** to carry a title: its `page.tsx` is `"use client"` and a client component cannot export `metadata`.
 - Trail additions while wiring this: `ui-samples` → Platform / UI samples, `connect` → Connect an app, `account/verify-email` → Settings / My account / Verify email. All three previously fell through to the `Backflip` default, in the header as well as the tab. Deeper routes are listed **before** the prefix they sit under (first match wins), which is why `verify-email` precedes `account`.
-- The on-page breadcrumb keeps its `/` separator; only the tab uses ` › `. `/` inside a tab title reads as a URL, which was the original complaint.
+- The on-page breadcrumb keeps its `/` separator; only the tab uses `›`. `/` inside a tab title reads as a URL, which was the original complaint.
 - Prefix stays a plain `B`. Enclosed-letter code points were considered and rejected: Ⓑ (U+24B7) is a circle against a square brand tile, 🄱 (U+1F131) has thin font coverage and risks tofu, 🅱 (U+1F171) carries emoji presentation and renders as the blood-type button. The favicon (`app/icon.svg`) already draws the bordered tile immediately left of the title, so a boxed letter would duplicate it.
 - Gotcha, cost ~10 min: `yarn typecheck` failed on a stale typed-routes validator after adding the layout. `next-env.d.ts` (gitignored, regenerated) was still importing `./.next-e2e/dev/types/routes.d.ts` from the last Playwright run, so the fresh `.next` route union collided with the stale e2e one. A normal `next build` rewrites it. Not a tsconfig problem — `exclude` does not help, since the file is reached by import, not by the glob.
 
 ## Integrations page — design 2a master-detail (L2-UI-03; ai + email domains UI)
 
 ### Route — `/backflip/settings/integrations` (`L2-UI-64`)
+
 - Was `/backflip/settings`. Moved 2026-09-13 so Integrations and MCP capabilities are siblings under the `settings` prefix.
-- Bug it fixes: `app-sidebar.tsx` `isActive` is `pathname.startsWith(url)`; with Integrations *at* the prefix, `/settings/mcp-capabilities` highlighted both items.
+- Bug it fixes: `app-sidebar.tsx` `isActive` is `pathname.startsWith(url)`; with Integrations _at_ the prefix, `/settings/mcp-capabilities` highlighted both items.
 - Everything page-scoped lives in `settings/integrations/` (`page.tsx`, `_actions.ts`, `_components/`, `_hooks/`, `_lib/`). `settings/` itself holds only the two route dirs — no `page.tsx`.
 - `/backflip/settings` → 307 `/backflip/settings/integrations` via `next.config.ts` `SETTINGS_REDIRECTS`; query preserved, so `?integration=…&provider=…` (`L2-UI-59`) still resolves.
 - Out-of-tree import: `app/api/backflip/ai/test/route.ts` → `settings/integrations/_lib/ai-test`.
 - `revalidatePath` targets in `_actions.ts` all point at the new path — `revalidatePath` is exact-path, the old string would revalidate a route that no longer renders.
 - Crumbs (`crumbs.ts`) match `/settings/integrations` explicitly; trail unchanged (Workspace › Integrations).
-`/backflip/settings/integrations` (owner-only) ported to a master-detail of the two **real** integrations. **Real-data-only**, actions/encryption unchanged; keys stay masked (no Reveal). Stored keys are no longer editable fields anywhere on the page: one shared `credential-field.tsx` renders a masked read-only row with **Replace** and a confirmed **Remove** (`L2-AI-23`), and removing a key switches that integration off while keeping its non-secret settings.
+  `/backflip/settings/integrations` (owner-only) ported to a master-detail of the two **real** integrations. **Real-data-only**, actions/encryption unchanged; keys stay masked (no Reveal). Stored keys are no longer editable fields anywhere on the page: one shared `credential-field.tsx` renders a masked read-only row with **Replace** and a confirmed **Remove** (`L2-AI-23`), and removing a key switches that integration off while keeping its non-secret settings.
 
 ![Integrations — AI providers pane](../assets/admin-integrations.png)
 
@@ -202,7 +230,6 @@ The header used to read `4 of 24` at all times. A real user read that as "there 
 
 Slack-style per-user chrome, so several Backflip platforms are distinguishable at a glance. Light palettes take MacBook colour names where one fits (Gold, Sky Blue, Rose Gold); Sage keeps an evocative name because Apple ships no green laptop. Plum, Garnet, Rust, Lilac and Iris were cut after review — a stored id that no longer exists resolves to `default` (`resolveChromeTheme`), so removing a palette is safe.
 
-
 ### Gradient chrome — `L2-UI-44`, `L2-UI-46`, `L2-UI-47`
 
 Sidebars are a shallow tonal ramp plus one corner glow, not a flat fill: a `160deg` linear ramp light at the top-left to dark at the bottom-right, with a `radial-gradient` glow at `0% 0%` where the brand tile sits. Stops sit close together on purpose — the eye should read depth, not "one purple fading into another purple".
@@ -210,7 +237,7 @@ Sidebars are a shallow tonal ramp plus one corner glow, not a flat fill: a `160d
 - **One recipe, four consumers.** `background-image` is declared once against a selector list: `.chrome-gradient` (the account preview tiles), `sidebar-inner`, the mobile `sidebar[data-mobile=true]` sheet, and the tinted non-glass `site-header`. A theme opts in by declaring `--grad-top` / `--grad-bottom` / `--grad-glow`; `--grad-surface` is pointed at `--sidebar` (or `--chrome-header`) by the rule that sets the rest of the subtree's tokens.
 - **`background-attachment: fixed` is what makes the L continuous.** The sidebar is full height, the header sits to its right; painted per element each restarts its own ramp and the corner shows two gradients meeting. `fixed` makes the viewport the positioning area, so each element paints its own slice of one ramp. Excluded: the mobile sheet (an overlay with nothing to line up with) and the glass header (`backdrop-filter` needs to see through, so it has no image at all).
 - **Never `color-mix()` over `var()` in shipped CSS.** The first cut derived every stop with `color-mix(in oklab, #fff var(--grad-lift), var(--grad-surface))`. It looked right in dev and the production minifier folded it to its first colour — the built ramp was literally `#fff 0% → var(--grad-surface) → #000 100%`, and the glass wash lost its alpha the same way. Caught by grepping the emitted `.next/static/chunks/*.css`, not by any test, which is why `chrome-themes.test.ts` now asserts the recipe contains no `color-mix` and that every palette spells its stops and its wash out literally. Inline style is exempt (nothing rewrites it), which is how `custom` still derives its stops.
-- **Never re-point `--grad-glow` (or the stops) per element.** The sidebar rule did, at `var(--sidebar-accent)` — which is the accent at **alpha 1.0**, while the theme block's literal carries 0.35 (light) / 0.5 (dark). On the dark palettes the lifted-accent literal happened to composite within 0.1% L of the opaque accent, so it looked fine; on every light palette, where the accent is *darker* than the surface, the sidebar's opaque glow darkened it and the header read ~5% L lighter. Measured, not eyeballed: `#fbe4e3` vs `#fdeceb` on Rose Gold. Each half now declares only `--grad-surface`.
+- **Never re-point `--grad-glow` (or the stops) per element.** The sidebar rule did, at `var(--sidebar-accent)` — which is the accent at **alpha 1.0**, while the theme block's literal carries 0.35 (light) / 0.5 (dark). On the dark palettes the lifted-accent literal happened to composite within 0.1% L of the opaque accent, so it looked fine; on every light palette, where the accent is _darker_ than the surface, the sidebar's opaque glow darkened it and the header read ~5% L lighter. Measured, not eyeballed: `#fbe4e3` vs `#fdeceb` on Rose Gold. Each half now declares only `--grad-surface`.
 - **Seam continuity has its own e2e test** (`admin-chrome.spec.ts`), sampling 8px either side of `sidebar-container`'s right edge at the header's midpoint and asserting <1% L difference, one palette per tone. Two separate regressions reached the branch invisibly before this existed; nothing short of a pixel check catches them, because both halves individually look correct.
 - **Stop positions, not stop colours, are what made the light palettes look flat.** The ramp is viewport-sized (that is what buys seam continuity), so its gradient line is ~1114px at 160deg on a 1280×720 viewport — and the sidebar spans only 8.5%–58.5% of it. With stops at 0/55/100 every palette showed just its top half: 0.024 L on the dark ones (visible), 0.012 L on the light ones (not). Moving the stops to **0/30/60** put the whole ramp inside the band the chrome actually occupies and took the light palettes from −0.1% to −5.8% measured luminance top-to-bottom, with their colours untouched. Widening the colours instead was tried first and overshot — master's own palette looked better.
 - **`default` ramps too**, from stops declared beside `--background` in `:root`/`.dark` rather than in a theme block, because it is the one theme that follows the light/dark toggle. The gradient selectors no longer carry `:not([data-chrome-theme="default"])`.
@@ -224,7 +251,7 @@ Opt-in second switch under "Tint the header too": the header sticks to the top o
 - The gradient selector carries an explicit `:not([data-chrome-glass="on"])`. Specificity, not source order, decided this: the gradient selector is `(0,4,1)` against the glass rule's `(0,2,1)`, so `background-image: none` inside the glass rule would have lost.
 - **The wash alone washes out.** At 72% the canvas bled through and the header stopped looking like its palette: Gold read near-white against a clearly gold sidebar, Aubergine sat lighter and flatter than its own sidebar, and stat-card edges showed through as grey smudges. Found from screenshots, not from reading the CSS.
 - **There are four cases, not two.** A named palette's tone is fixed while the canvas follows light/dark, so every palette meets both a light and a dark backdrop. The first fix corrected only `brightness()` per palette and was validated on two of the four; it left light-palette-in-dark-mode (gold over `oklch(0.145)` → beige mud) untouched. Caught by a second opinion before it shipped — the lesson is to enumerate tone × mode, and the capture harness now loops all four.
-- **The fix is backdrop colour correction, not more alpha** — raising alpha to ~95% keeps the colour by killing the effect. The chain drags the backdrop's *mean* onto the header's own lightness, so the leftover 20% is texture rather than a colour shift. Same polarity: `blur(14px) saturate(1.4) brightness(2)` (dark in dark), `blur(14px) saturate(1.6) brightness(1.08)` (light in light — the 1.08 also clips the canvas to white while lifting blurred text, which is what kills the smudges). Opposite polarity: `blur(14px) grayscale(1) invert(0.9) brightness(1.3)` (dark over light), `blur(14px) grayscale(1) invert(1)` (light over dark). `brightness()` cannot do the opposite-polarity cases — the factor that moves the mean also crushes the variance — and `contrast()` pivots on 0.5 so it clips first.
+- **The fix is backdrop colour correction, not more alpha** — raising alpha to ~95% keeps the colour by killing the effect. The chain drags the backdrop's _mean_ onto the header's own lightness, so the leftover 20% is texture rather than a colour shift. Same polarity: `blur(14px) saturate(1.4) brightness(2)` (dark in dark), `blur(14px) saturate(1.6) brightness(1.08)` (light in light — the 1.08 also clips the canvas to white while lifting blurred text, which is what kills the smudges). Opposite polarity: `blur(14px) grayscale(1) invert(0.9) brightness(1.3)` (dark over light), `blur(14px) grayscale(1) invert(1)` (light over dark). `brightness()` cannot do the opposite-polarity cases — the factor that moves the mean also crushes the variance — and `contrast()` pivots on 0.5 so it clips first.
 - **Keyed on `data-chrome-tone`, not on palette ids.** The layout stamps it from the catalog's `group`, and from luminance for `custom` (whose tone is unknowable to inline style, which cannot express a media query). Adding a palette needs no CSS list edit; `chrome-themes.test.ts` asserts every fixed palette has a tone and both rules exist.
 - Hover/active rows were raised to ~0.085 L from the surface (dark) and ~0.075 L below it (light); the stock sidebar's was 0.015 L, the faintest of the lot and the first one most people meet.
 - Alpha 0.80 everywhere, and each wash pre-compensates chroma by ÷0.8 — a neutral backdrop dilutes chroma by exactly (1−α), so slate landed at C 0.021 instead of 0.026 without it.
@@ -240,7 +267,7 @@ Opt-in second switch under "Tint the header too": the header sticks to the top o
 - `(protected)/layout.tsx` — resolves the preferences server-side, stamps `data-chrome-theme` + `data-chrome-header` on `SidebarProvider`. Server-rendered, so no flash. Satisfies `L2-UI-25`, `L2-UI-32`.
 - `(protected)/_components/site-header.tsx` — carries `data-slot="site-header"`, the hook the CSS paints through.
 - Custom theme (`L2-UI-33`): `customChromeVars()` in `chrome-themes.ts` derives the full variable set from two hex picks; the layout emits it inline (no CSS block exists for `custom`). Ink flips on WCAG luminance at 0.45 — not 0.5, because mid greens read brighter than their luminance suggests and light ink is the safer miss. The card spans two grid columns beside Default; colour inputs commit on `change`, not `input`, so dragging a colour wheel is one write, not one per frame.
-- **Inline style outranks the header opt-out.** The custom palette ships as inline `style` on the wrapper, so `[data-chrome-header="plain"]` could not override `--chrome-header-*` and Custom stayed tinted while every built-in theme obeyed the switch. `customChromeVars(surface, accent, headerThemed)` now *omits* those five variables when the header is plain, and the client `removeProperty`s them before re-emitting — absent, not overridden, is the only thing that works here.
+- **Inline style outranks the header opt-out.** The custom palette ships as inline `style` on the wrapper, so `[data-chrome-header="plain"]` could not override `--chrome-header-*` and Custom stayed tinted while every built-in theme obeyed the switch. `customChromeVars(surface, accent, headerThemed)` now _omits_ those five variables when the header is plain, and the client `removeProperty`s them before re-emitting — absent, not overridden, is the only thing that works here.
 - The header-tint switch sits between the Default/Custom row and the Dark row: it qualifies how every palette below is applied, so it reads first.
 - `account/_components/appearance-section.tsx` — tile grid grouped Default / Dark / Light, 1 / 2 / 3 columns at base / `sm` / `lg`. Each tile is a miniature of the real shell (themed sidebar with brand row, one accent-filled active nav row and idle rows; themed header strip; neutral content). The gradient is painted **once on the whole tile box** with the sidebar column and header strip transparent over it, mirroring the live chrome's one-ramp trick (`L2-UI-46`) at miniature scale; glass thins the strip to 72%. Selection is the border swap plus a plain-ink tick — the filled primary disc was a second, louder signal for a state the border already carries. The `default` tile paints from live CSS tokens (`bg-sidebar`, `bg-background`) rather than fixed swatch colors, so it tracks the light/dark toggle like the real chrome. Selecting sets the attribute on the live shell immediately, then persists; a failed save rolls both back. Satisfies `L2-UI-31`.
 - `account/_actions.ts` → `saveChromeTheme` (catalog-validated) + `saveChromeHeaderThemed` — both self-scoped, both `revalidatePath("/backflip", "layout")`. Satisfies `L2-UI-28`, `L2-UI-32`.
@@ -248,17 +275,21 @@ Opt-in second switch under "Tint the header too": the header sticks to the top o
 - `app/_lib/theme/chrome-themes.test.ts` — locks catalog ↔ stylesheet both ways, and that every theme sets header tokens as well as sidebar ones.
 
 ### Why token re-pointing rather than themed classes
+
 The header and sidebar contain children that use plain `text-muted-foreground`, `bg-border`, ghost buttons and an avatar. Rather than teaching each one about theming, the CSS re-points the base tokens **inside those two subtrees** (`[data-slot="site-header"]`, `[data-slot="sidebar-inner"]`). Because shadcn declares its palette with `@theme inline`, utilities compile to `var(--foreground)` etc. directly, so a subtree redefinition retints everything under it. The sidebar rule is scoped to `:not([data-chrome-theme="default"])` so the stock shell is bit-for-bit unchanged.
 
 ### One stylesheet, two surfaces
+
 `@workspace/ui/globals.css` is imported once in the root layout, so the public site and the admin share a single stylesheet — there is no per-surface CSS split. Every chrome-theme rule therefore gates itself on `[data-chrome-theme]`, an attribute stamped only by the admin protected layout:
+
 - theme blocks — `[data-chrome-theme="<id>"]`, inert with no attribute present;
 - sidebar rules — scoped `[data-chrome-theme]:not([data-chrome-theme="default"]) …`;
 - the header rule — `[data-chrome-theme] [data-slot="site-header"]`. It was briefly unscoped; the public header (`app/_components/site-header.tsx`) does not carry that `data-slot`, so nothing leaked, but the collision was one component away.
-The `--chrome-*` / `--stock-*` declarations at `:root` do ship to public pages. They are inert definitions — no public rule consumes them — and cost a few hundred bytes.
+  The `--chrome-*` / `--stock-*` declarations at `:root` do ship to public pages. They are inert definitions — no public rule consumes them — and cost a few hundred bytes.
 
 ### Gotchas
-- **The picker renders inside the themed shell.** `--sidebar` on the account page is whatever theme is *active*, so a Default tile drawn with `bg-sidebar` showed a dark sidebar while a dark theme was selected. Fixed with `--stock-*` vars captured at `:root` — out of reach of the theme blocks (which sit on the wrapper, a descendant) and still following light/dark. Every tile now paints from inline colors; none use `bg-sidebar`.
+
+- **The picker renders inside the themed shell.** `--sidebar` on the account page is whatever theme is _active_, so a Default tile drawn with `bg-sidebar` showed a dark sidebar while a dark theme was selected. Fixed with `--stock-*` vars captured at `:root` — out of reach of the theme blocks (which sit on the wrapper, a descendant) and still following light/dark. Every tile now paints from inline colors; none use `bg-sidebar`.
 - Selected tile is a 1px `border-primary` swap with no `ring-*` — a border plus ring reads as one thick 2px outline.
 - Named themes are fixed palettes — a dark theme stays dark in light mode. Intended (`L2-UI-29`); it is what makes the chrome an identity rather than a mood.
 - **Tuned after first review** (2026-08-31): the four dark themes were near-indistinguishable at chroma ≈0.02, and the sidebar↔header seam read as a hard rule. Dark chroma went to ~0.042–0.051 with hues spread (slate 258, pine 173, graphite neutral by design), light to ~0.018–0.021, and every border moved to ≈0.045 L from its surface. Both halves of the chrome share one surface, so the seam only needs a hairline.
@@ -269,13 +300,16 @@ The `--chrome-*` / `--stock-*` declarations at `:root` do ship to public pages. 
 ## Docs explorer — `L2-UI-20`
 
 ### Navigation
+
 - **State lives in the URL** (`L2-UI-38`): `domain`/`l1`/`l2`/`l3`/`clause`/`view`/`q`. `navigate(patch, mode)` merges into the existing params; picks and jumps `push` (so browser back retraces them), search `replace`s. Nothing about the view is held in component state any more except the ephemeral "only these lines" toggle and the search input draft. `page.tsx` wraps the explorer in `Suspense` — `useSearchParams` requires it.
 - The search input keeps a local `draft` and follows the URL through a render-time adjustment (`if (query !== lastQuery)`), not an effect — back/forward changes `q` externally and the box has to follow without a second render pass.
 - Entry points on the Guide tab are filtered through `graph.byId`, so a retired ID disappears from the list rather than rendering a dead link.
-- The detail pane *replaces* the overview pane (they share the bottom slot, switched on `detailKey`). Opening a clause from the drift list therefore had no way back: the cascade above only swaps one detail for another, and Reset was hidden because a drift-list jump sets no selection. `ClauseDetail` now carries an **Overview** back button (`onBack` → `setDetailKey(null)`), and `filtering` counts `detailKey`, so Reset shows there too.
+- The detail pane _replaces_ the overview pane (they share the bottom slot, switched on `detailKey`). Opening a clause from the drift list therefore had no way back: the cascade above only swaps one detail for another, and Reset was hidden because a drift-list jump sets no selection. `ClauseDetail` now carries an **Overview** back button (`onBack` → `setDetailKey(null)`), and `filtering` counts `detailKey`, so Reset shows there too.
 
 ### Making the model legible (`L2-UI-35`–`L2-UI-39`)
+
 The explorer was built as a filter tool for someone who already knew the doc system; a newcomer met three identical columns, silent filtering and a defect list. Five changes, in the order they matter:
+
 1. **Orientation strip** — the levels and the citation direction, one line, dismissible per browser.
 2. **Guide tab** (default landing) — level cards with live counts, the cite-upward/conflict rule, worked entry points, the domain map. Drift moved to a **Health** tab; it is a maintainer's view, not an on-ramp.
 3. **Trace bar + column constraint chips** — the cascade filters bidirectionally, which used to look like lists changing for no reason. Both are one click to undo.
@@ -283,6 +317,7 @@ The explorer was built as a filter tool for someone who already knew the doc sys
 5. **Trace promoted** out of the 260px right rail to under the clause title; the reading pane took the full width.
 
 Settled after testing:
+
 - **Content above navigation.** The guide/reading pane sits directly under the orientation strip; domain chips, trace bar and columns moved below it. The old order buried the guide three scrolls down and opened clause detail below the fold.
 - **Trace rows are single lines, scrolled — never wrapped.** `L1-ARCH-01` has fourteen implementers; as a wrapping chip cloud they filled the pane and pushed the clause text out of view. Fixed label column, uniform 176px chips, `overflow-x-auto`, and the bar is `flex-none` so it can never grow into the reading area.
 - **The guide no longer lists domains** — the chip row sits a few pixels below it; two selectors for one thing.
@@ -290,10 +325,12 @@ Settled after testing:
 - **Kind-tag titles** (`L2-UI-41`): `titleFrom` took `_(inv)_` as the clause title, so concern-grouped contracts (auth, mcp) listed rows reading `_(inv)_`. Stripped — index-wide, zero clauses still title as their tag.
 
 ### Drift legend + marker parsing (`L2-UI-23`)
+
 - The landing view leads with a legend: one row per badge — pill, count, one-line meaning — including badges at zero, so the pills further down the list are always decodable. `no code` is the one that reads as alarming and usually isn't: it means no file carries an `@spec` tag for that ID, which for env/compose/script clauses is expected (JSON has no comments, and the doc rules say not to force tags onto invariant/error/acceptance IDs).
-- `needsConfirm` used to match the literal marker anywhere in a clause, so the two docs that *describe* the rule (`L2-UI-23` and this notes section) flagged themselves. `carriesNeedsConfirm()` in `parse-docs.ts` strips inline-code spans first — quoting the marker is not carrying it.
+- `needsConfirm` used to match the literal marker anywhere in a clause, so the two docs that _describe_ the rule (`L2-UI-23` and this notes section) flagged themselves. `carriesNeedsConfirm()` in `parse-docs.ts` strips inline-code spans first — quoting the marker is not carrying it.
 
 `/backflip/docs` — the repo's three-level docs, browsable in-app. Domain chips + an L1 | L2 | L3 cascade over a markdown reading pane. Header "Docs" link points here (was the GitHub README, which is now an in-page link); `⌘K` jump target added. **No sidebar entry** — reference surface, not daily nav.
+
 - `docs/page.tsx` — RSC, `metadata.title` "Docs"; awaits `getDocsIndex()` → `DocsExplorer`. Capability `dashboard` (shell already gates the subtree). Satisfies `L2-UI-20`.
 - `docs/_lib/parse-docs.ts` — pure parser, no fs/Next: raw file contents → `DocsIndex`. Clause = one ID'd bullet (``- `L2-UI-05` — …``, continuation lines folded in) or, for L3 and prose, a whole `##` section. Cite edges: L2→L1 from inline L1 IDs, else the header's `Implements L1:`; L3→L2 from every L2 ID in the section; L2→L2 from `Depends on L2:`. `specIdsIn()` pulls IDs off `@spec` lines in any comment syntax. Satisfies `L2-UI-21`, `L2-UI-24`.
 - `docs/_lib/read-docs.ts` — disk side: `repoRoot()` climbs from cwd until `docs/constitution.md`, reads `docs/{constitution,contracts/*,notes/*}.md`, walks `apps`/`packages`/`devops` (skips `node_modules`, `.next`, `.turbo`, `dist`, test artifacts; `.ts .tsx .mts .mjs .js .css .sh .yml .yaml` + `Dockerfile*`/`Caddyfile`) for `@spec` tags. Satisfies `L2-UI-21`.
@@ -311,6 +348,7 @@ Settled after testing:
 - L1 has no domain, so the domain chips narrow the L1 column to the invariants that domain's contracts implement.
 
 ## Public surface — one page (`L2-UI-63`)
+
 `/` is the whole public site: `SiteHeader` → `Hero` → `SiteFooter`. Retired here with the code, so the detail is not hunted for later:
 
 - **`/getting-started/*`** — the index, intro, start-building prompts page and the two droplet setup wizards (pm2 + docker flavours) are gone, along with `getting-started/_components/` (the generic `WizardShell`, stepper, command block, guidance panel) and each guide's `setup-vars.ts`. Those files mirrored the real `devops/` command strings and had to be updated in lockstep with them — that obligation is now discharged; `devops/` and the `L2-DEVOPS-*` clauses are the only copy.
@@ -318,16 +356,20 @@ Settled after testing:
 - The marketing copy in those sections made claims checked against `L2-AUTH`, `L2-MCP-02`/`L2-MCP-20` and the repo LICENSE. Deleting them removes that recurring claim-check; do not reintroduce a feature list without it.
 
 ## Deployed version marker — `L2-UI-19`
+
 Shows which release an instance is serving, on both surfaces.
+
 - `apps/web/app/_components/app-version.tsx` (`@spec L2-UI-19`) — exports `APP_VERSION` (string) + `<AppVersion className?>`; renders `v<version>` at `text-[11px] text-muted-foreground/60 tabular-nums` (`className` for placement only). App-scoped `_components` since both surfaces use it (`L1-ARCH-08`).
 - Value source: monorepo root `package.json` `version`, read in `apps/web/next.config.ts` (`readFileSync` + `JSON.parse`) and inlined via `env: { NEXT_PUBLIC_APP_VERSION }`. Build-time on purpose — the build-locally deploy (`L2-DEVOPS-20`) ships only the standalone bundle, so there is no root `package.json` on the droplet to read at runtime, and a plain JSON import would bundle the whole manifest. Fallback `"0.0.0"` if the var is ever absent.
 - Mount points: public `site-footer.tsx` (baseline-aligned after `© <year> Backflip`) and admin Overview `page.tsx` (last child of the page column, centered). Nothing else mounts it.
 - Bumping the version = editing root `package.json` and redeploying; there is no runtime override, and a hot droplet keeps showing the version of the build in its live slot.
 
 ## Form-element sizing (house tweak, padding only)
+
 Form primitives get +2px padding + grown heights over base-mira defaults — **font sizes unchanged**: `button` (size + icon variants), `input`, `textarea`, `native-select`, `select` trigger. Arbitrary px (`px-[10px]`, `py-[4px]`, `h-8`) where no clean Tailwind step. No theme-level text-scale bump (reverted). `cursor: pointer` on buttons is a base-layer rule. Re-`shadcn add` would overwrite these.
 
 ## Installed components (60)
+
 Full `base-mira` registry (added via `shadcn add -a -c packages/ui`):
 accordion, alert, alert-dialog, aspect-ratio, attachment, avatar, badge, breadcrumb, bubble,
 button, button-group, calendar, card, carousel, chart, checkbox, collapsible, combobox, command,
@@ -349,6 +391,7 @@ table, tabs, textarea, toggle, toggle-group, tooltip.
 Hook: `src/hooks/use-mobile.ts` (sidebar).
 
 ## Deps added for components
+
 - `sonner` — toast (needs `<Toaster/>`).
 - `react-day-picker` + `date-fns` — calendar.
 - `recharts` — chart.
@@ -359,33 +402,74 @@ Hook: `src/hooks/use-mobile.ts` (sidebar).
 - `@shadcn/react` — registry runtime helpers.
 
 ## Deviations
+
 - `spinner.tsx` — registry shipped `React.ComponentProps<"svg">`; retyped to `ComponentProps<typeof RiLoaderLine>` (remixicon `children: undefined` clash). Local edit; re-check on `shadcn add` overwrite.
 
 ## Admin content cap — `L2-UI-61`
+
 - `(protected)/layout.tsx` declares `--content-width: 1440px` beside the sidebar/header variables and applies it to a `mx-auto w-full max-w-(--content-width)` wrapper **inside** the `bg-muted/40` canvas. Canvas full-bleed, content capped: the muted ground still reaches both edges instead of ending at the content's edge.
 - Pages own no width. Padded pages (Overview, Account) and full-bleed master-detail pages (Integrations, Members) both inherit the cap from the shell, so there is one place to change it.
 - **px, not rem.** `90rem` looked like the idiomatic value and rendered 1530px: `globals.css` sets `html { font-size: 17px }` (see Base scale below). Measured, not eyeballed — the e2e guard asserts 1440 exactly.
-- The header is deliberately *not* capped: breadcrumb stays hard left, search/theme cluster hard right, matching the sidebar's own full-height edge. Chosen over aligning the header row with the content.
+- The header is deliberately _not_ capped: breadcrumb stays hard left, search/theme cluster hard right, matching the sidebar's own full-height edge. Chosen over aligning the header row with the content.
 
 ## Base scale
+
 - `globals.css` sets `html { font-size: 17px }` (up from 16). base-mira ships compact; this scales all rem sizes (text, control heights, padding, gaps) ~6% for a slightly larger, roomier feel. Tune this single value to rescale the whole UI.
 
 ## Reference
+
 - Admin/dashboard UI is built from **shadcn blocks**: https://ui.shadcn.com/blocks — browse for layouts/components. In use: `login-03` (login), `dashboard-01` (admin shell), `sidebar-08` (earlier shell). Clone source to `.external-repos/` (gitignored) when replicating; port `asChild`→`render`, lucide/tabler→remixicon.
 
 ## Composition (base-mira / base-ui)
+
 - base-mira components compose via base-ui `useRender` — pass `render={<el/>}` with children as siblings, NOT Radix-style `asChild` + child. E.g. `<SidebarMenuButton render={<a href={url} />}>…</SidebarMenuButton>`, `<Collapsible render={<SidebarMenuItem />}>`, `<DropdownMenuTrigger render={<SidebarMenuButton />}>`.
 - When porting shadcn new-york blocks (which use `asChild`), rewrite to `render`. Also map lucide icons → remixicon.
 - **Link-buttons need no `nativeButton`.** `Button` (`packages/ui/src/components/button.tsx`) derives base-ui's `nativeButton` from the `render` element: `render.type === "button"` → `true`, any other element (`<a>`, `<Link>`) → `false`. Explicit `nativeButton` still wins; function-form `render` can't be inspected and keeps base-ui's `true` default. Call sites write `<Button render={<a href="…" />}>` and stay warning-free.
 
 ## Fixed
+
 - `@source` globs in globals.css were one level short (`../../../apps` → `packages/apps`, nonexistent). Tailwind never scanned `apps/web`, so app-level utility classes (page layout on `/ui-samples`) weren't generated → page rendered unstyled vs shadcn preview. Corrected to `../../../../` (repo root).
 - **Admin shell forced page-wide horizontal scroll.** `SidebarInset` (`sidebar.tsx`) was `w-full flex-1` with no `min-w-0`. Flex items default to `min-width: auto`, so `main` could not shrink below its content's min-content width — at 1200×600 on `/backflip/account` it rendered 1020px inside a 936px slot, pushing `document.scrollWidth` to 1284. Added `min-w-0`. Shell-wide: header and every admin page overflowed identically, not just account.
 - **Base UI button-semantics warning ×4 on the public homepage.** `Button` passed base-ui's default `nativeButton: true` while rendering `<a>` (site-header ×2, hero ×2), so base-ui warned that native button semantics were lost. Fixed centrally by inferring `nativeButton` from `render` (see "Composition") rather than patching call sites — the same latent bug existed at `app-sidebar.tsx` ×2, `verify-email-confirm.tsx`, `forgot-password-form.tsx`, `reset-password-form.tsx`. Verified: 0 console errors/warnings across `/`, `/ui-samples`, `/backflip/login`, `/backflip/forgot-password`, `/backflip`, `/backflip/users`, `/backflip/account`, `/backflip/settings/integrations`.
 - **Admin header overflowed below `lg`.** The right cluster (`ml-auto`) plus breadcrumb could not compress — +33px at 768. Cluster got `min-w-0 shrink`, breadcrumb `nav` got `min-w-0 truncate`, `header-search.tsx` button got `min-w-0 shrink`. Verified no horizontal overflow at 1200/1024/900/768/640.
 
 ## TODO
+
 - _(none)_ — admin chrome (sidebar/topbar) landed; flat-restyled (see "Admin flat restyle").
 
 ## ADR
+
 _(none yet)_
+
+## WordBloom
+
+- `apps/web/app/backflip/(protected)/_components/app-sidebar.tsx` — `NAV_GROUPS` Platform grupėje po „Overview“ yra „My apps“ (`RiLayoutGridLine`), naudojantis bendrus `Collapsible` ir `SidebarMenuSub` komponentus; viduje išorinė nuoroda „WordBloom“, `dashboard` capability; `Link` naviguoja į `/backflip/wordbloom` naujame skirtuke per `newTab: true`, `target="_blank"` ir `rel="noopener noreferrer"` (`L2-UI-66`).
+
+## My apps — `L2-UI-67`
+
+- `(protected)/my-apps/page.tsx` — serverio puslapis; `requireCapability("dashboard")`, bendri `PageHeading` ir `Card`, 1–4 stulpelių kvadratinių kortelių tinklelis; „WordBloom“ dekoratyvi SVG gėlė paveldi temos spalvas.
+- `app-sidebar.tsx` — „My apps“ pavadinimas naviguoja į biblioteką ir nustato valdomą `Collapsible` būseną į išskleistą; atskiras `SidebarMenuAction` perjungia medį; tiesiogiai atidarius biblioteką medis pradžioje išskleistas (`L2-UI-66`).
+- `backflip/_lib/crumbs.ts` — „My apps“ antraštė ir breadcrumb (`L2-UI-52`).
+- Bibliotekos antraštę nuo „All apps“ skiria `gap-10`, korteles nuo filtro eilutės — `mb-6`; tarp „All apps“ ir kiekio — `gap-3` (`L2-UI-67`).
+
+## WordBloom Next integration — `L2-UI-68/69/70/71`
+
+- `(protected)/wordbloom/page.tsx` — server page enforces dashboard capability; route HTML is no-store for fresh Safari reloads.
+- `(protected)/wordbloom/_components/wordbloom-app.tsx` — full-screen client host mounts the existing DOM learning engine; scripts load sequentially from the authenticated API route.
+- `(protected)/wordbloom/_components/wordbloom.module.css` — generated scoped selectors from `apps/wordbloom/styles.css`; app stays isolated from Backflip shell styles.
+- `api/wordbloom/[[...asset]]/route.ts` — GET/HEAD serves only the allowlisted WordBloom assets after the dashboard session guard; asset responses are private and no-store to prevent stale CSS/JS in Safari.
+- `next.config.ts` — traces each allowlisted asset into the standalone bundle; local and integrated WordBloom HTML/API routes use no-store headers; Next.js development chunks also use no-store so Safari reloads fetch changed CSS/JS (`L2-UI-71/72`).
+- Card/sidebar links use `http://localhost:3081/wordbloom` in development and `/backflip/wordbloom` otherwise; both open in a new tab.
+- `app/wordbloom/page.tsx` — checks the request host and exposes the local presentation only in development on loopback port 3081 (`L2-UI-72`).
+- `app/_lib/wordbloom-local.ts` — shared development and loopback guard for the local page and asset API (`L2-UI-72`).
+- `apps/wordbloom/app.js` — Parent corner's confirmed test reset clears saved attempts and unfinished test sessions only (`L2-UI-73`).
+- `apps/wordbloom/app.js` — My Team heading includes a confirmed football collection reset; it replaces only `state.football` with `C.football.fresh()` (`L2-UI-74`).
+- `apps/wordbloom/index.html` and `(protected)/wordbloom/_components/wordbloom-app.tsx` — Tests is the only learning navigation item; My Team and Parent corner remain (`L2-UI-75`).
+- `apps/wordbloom/app.js` — Tests hero and card progress share one panel; tile reward labels sit beside test titles; selected-collection attempt counts and perfect marks render per mode; after 10 attempts, a test click stores a 15-minute per-collection/per-mode cooldown in localStorage; result screen reports earned and remaining card progress; app pushes a same-route history entry for a practice, so browser Back clears the session and returns to Tests; typed answers validate only after input and Check or Enter; Find a Word shows its picture and reads the clue aloud; Read & Choose reads the clue aloud; claiming a player routes to My Team (`L2-UI-68/75`).
+- `apps/wordbloom/styles.css` and `(protected)/wordbloom/_components/wordbloom.module.css` — responsive test tiles reuse the Extra Training card layout in local and authenticated views (`L2-UI-75`).
+- `apps/wordbloom/core.js` + `football.js` — Listen & Write and builder add 30%, Look & Write 60%, choice tests 20%; reaching 100% creates a pending player choice and preserves remainder; player offers shuffle available unowned/unreserved players and avoid the last offer when possible; legacy challenge sessions no longer award progress (`L2-UI-69`).
+- `apps/wordbloom/styles.css` and `(protected)/wordbloom/_components/wordbloom.module.css` — Tests hero combines collection heading with card progress; single-line test titles align vertically with icons; 9px white Earn labels use compact green rectangles; per-test counts use small, semibold green Georgia text aligned right, and perfect-completion marks are collection-scoped; answer fields keep neutral border until an empty check; all native dialogs are explicitly centered; desktop and mobile layouts align (`L2-UI-75`).
+- `apps/wordbloom/football.js` + `app.js` — goalkeeper assignment is limited to GK slots; every other collected player can fill any outfield slot; normalization preserves these valid custom placements (`L2-UI-75`).
+- `apps/wordbloom/app.js` — automatic voice selection scores enhanced/natural/neural/premium English voices above accent and local-service preferences; a saved available voice remains authoritative (`L2-UI-75`).
+- `apps/wordbloom/tests/core.test.cjs` and `tests/browser.cjs` — reward thresholds, test modes, inline feedback and automatic letter-test submission.
+- `apps/wordbloom/portraits.js`, `photo-credits.json`, `photo-credits.html` — local player photos and attribution.

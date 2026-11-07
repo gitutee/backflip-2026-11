@@ -3,6 +3,7 @@
 > L3 = how / volatile. AI writes free. Cites L2 IDs up. Matches code as-is.
 
 ## File map
+
 - `docker-compose.yml` — services `db` (`backflip-db`, no profile → default), `db-migrate` (`backflip-db-migrate`, profiles web+seed, one-shot `corepack yarn db:migrate` off Dockerfile `deps` stage), `web` (`backflip-web`, profile web, waits for db healthy + migrate completed, `AUTH_URL=http://localhost:3071` override), `db-seed` (`backflip-db-seed`, profile seed, one-shot `corepack yarn init-owner`, `.env.init` via optional env_file — never `environment:`, which would override the file with empties). Shared `x-db-url` anchor for the in-network `DATABASE_URL`. Satisfies `L2-INF-01`, `L2-INF-02`, `L2-INF-05`, `L2-INF-14`, `L2-INF-15`. `name: backflip`. Volume `backflip_pgdata`.
 - `apps/web/Dockerfile` — 4-stage (base → deps → build → runner; `deps` = workspace + node_modules for migrate/seed tools), context = repo root. Build stage: `corepack enable`, `yarn install --immutable`, `yarn workspace web build`. Runner ships only the Next standalone bundle, runs `node apps/web/server.js` as the non-root `node` user (`USER node`, read-only at runtime). Satisfies `L2-INF-04`, `L2-INF-16`.
 - `.dockerignore` — excludes node_modules, `.next`, `.turbo`, `.git`, `.env*` (keeps `.env.example`).
@@ -14,6 +15,7 @@
 - `package.json` (root) + `packages/typescript-config/package.json` — `"license": "SEE LICENSE IN LICENSE"` (npm-valid; PolyForm has no SPDX id). Latter was `PROPRIETARY`. Other workspace manifests carry no `license` field; all are `private: true`, nothing is published.
 
 ## State
+
 - Preferred dev: app local (3070) + db in Docker — plain `docker compose up -d` starts ONLY `backflip-db` (web/seed are behind profiles). Full-docker (app 3071): `docker compose --profile web up -d --build`; both can run at once against the same db.
 - A pre-existing stopped `backflip-db` container (postgres:16, volume `cv_backflip-db-data`, from an older setup) held the fixed name and was removed 2026-07-30; its volume was left untouched.
 - App Docker = prod build, no hot reload (local is the dev driver).
@@ -21,6 +23,7 @@
 - `next start` no longer used in prod paths — prod runs the standalone server (`node apps/web/server.js`), on the droplet via pm2. `corepack yarn workspace web start` still serves (verified) but warns about `output: "standalone"`; kept for quick local checks.
 
 ## Env loading (monorepo)
+
 - Three root env files, by lifecycle: `.env` (db/infra, runtime), `.env.local` (Auth.js runtime secrets), `.env.init` (one-off owner seed — `ADMIN_*`). Next runs in `apps/web` so it won't read root env by itself.
 - Local dev: `web` `dev` script uses `dotenv-cli` (`dotenv -e ../../.env -e ../../.env.local -- next dev`) to inject root env (needed by edge proxy + node routes). `.env.init` is intentionally NOT loaded here — admin creds stay out of the app env.
 - Docker app: compose `env_file: [.env, .env.local]` injects env; `DATABASE_URL` overridden to `db:5432` via `environment:`. `.env.init` intentionally excluded (seed-only).
@@ -28,8 +31,21 @@
 - Postgres 5544 verified clear (existing pg containers on 5436/5437).
 
 ## Ports
+
 - App: local 3070 / docker host 3071 → container 3070.
 - Postgres: host `127.0.0.1:${POSTGRES_PORT:-5544}` → container 5432 (loopback-bound, `L2-INF-05`). Default 5544 chosen off 5432 (docker daemon was down at setup — couldn't scan existing images; verify no clash, adjust `POSTGRES_PORT` if needed). Satisfies `L2-INF-08`.
 
 ## TODO
+
 - Optional: dev-mode app container with source mount if containerized hot reload is ever wanted.
+
+## WordBloom workspace — `L2-INF-18`
+
+- `apps/wordbloom/` — WordBloom HTML/JS/CSS, iliustracijos, dokumentacija ir testai; atskiras Python serveris ir `localhost:3081` paleidiklis pašalinti.
+- `apps/wordbloom/package.json` — Node logikos patikros; Backflip naudoja apsaugotą Next maršrutą, o atskirą vietinį vaizdą paleidžia `dev:wordbloom` ant `localhost:3081` (`L2-UI-71`, `L2-UI-72`).
+- `apps/web/next.config.ts` `NEXT_DIST_DIR` nustatymas leidžia atskiram WordBloom dev serveriui naudoti `.next-wordbloom`, nesidalijant `.next` su Backflip procesu.
+- My Apps ir sidebar vietiniame kūrime atidaro `http://localhost:3081/wordbloom`; kituose režimuose `/backflip/wordbloom`.
+- Atsargos ir progresas saugomi naršyklės IndexedDB, todėl 3081 ir 3070 origin duomenys yra atskiri.
+- `apps/wordbloom/.gitignore` — vietinės `.code-backups/`, `.logs/`, Python cache ir testų ekranvaizdžiai neįtraukiami į Git.
+- Perkėlimo metu originalas išsaugotas `/Users/gita/apps/Anglu-zodziai/WordBloom-before-backflip-20261105`; aktyvus serveris perjungtas į `apps/wordbloom`.
+- Iki integracijos patikra: 38 Node, 6 Python serverio ir 37 Playwright scenarijai praėjo; serverio įgyvendinimas ir jo Python testai vėliau pašalinti.
